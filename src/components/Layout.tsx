@@ -1,4 +1,5 @@
 // src/components/Layout.tsx
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '../store';
 import { Sidebar } from './Sidebar';
@@ -37,7 +38,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown );
     };
   }, [theme]);
 
@@ -204,7 +205,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div
           className="flex-1 flex overflow-hidden pt-0 md:pt-0 pb-16 md:pb-0 w-full"
           style={{
-            // marginLeft: isMobileMenuOpen ? '0' : (window.innerWidth <= 768 ? 0 : sidebarWidth),
             width: '100%' // Always take full width
           }}
         >

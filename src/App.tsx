@@ -1,9 +1,10 @@
-// src/App.tsx (updated with keyboard shortcuts)
+// src/App.tsx
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Home } from './pages/Home';
 import { Runner } from './pages/Runner';
+import { Environments } from './pages/Environments';
 import { Toaster } from './components/ui/toaster';
 import { useAppStore } from './store';
 import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts';
@@ -28,6 +29,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/environments" element={<Environments />} />
             <Route path="/runner" element={<Runner />} />
           </Routes>
         </Layout>
@@ -35,7 +37,6 @@ function App() {
       </div>
     </Router>
   );
-
 }
 
 export default App;

@@ -1,13 +1,14 @@
 // src/components/Navigation.tsx
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Play, Code, Settings, FileText } from 'lucide-react';
+import { Home, Play, Server, Settings, FileText } from 'lucide-react';
 
 export const Navigation: React.FC = () => {
   const location = useLocation();
   
   const navItems = [
     { path: '/', icon: <Home size={16} />, label: 'Requests' },
+    { path: '/environments', icon: <Server size={16} />, label: 'Environments' },
     { path: '/runner', icon: <Play size={16} />, label: 'Runner' },
   ];
   
