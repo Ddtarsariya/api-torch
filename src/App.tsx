@@ -1,14 +1,13 @@
-// src/App.tsx
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Layout } from './components/Layout';
-import { Home } from './pages/Home';
-import { Runner } from './pages/Runner';
-import { Environments } from './pages/Environments';
-import { Toaster } from './components/ui/toaster';
-import { useAppStore } from './store';
-import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts';
-import './App.css';
+import { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Layout } from "./components/Layout";
+import { Home } from "./pages/Home";
+import { Runner } from "./pages/Runner";
+import { Environments } from "./pages/Environments";
+import { Toaster } from "./components/ui/toaster";
+import { useAppStore } from "./store";
+import { useKeyboardShortcuts } from "./hooks/use-keyboard-shortcuts";
+import "./App.css";
 
 function App() {
   const { theme } = useAppStore();
@@ -16,10 +15,10 @@ function App() {
 
   useEffect(() => {
     // Apply dark mode class to document
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [theme]);
 

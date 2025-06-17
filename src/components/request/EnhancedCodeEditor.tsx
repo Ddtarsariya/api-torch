@@ -1,16 +1,15 @@
-// src/components/request/EnhancedCodeEditor.tsx
-import React, { useState } from 'react';
-import { Editor } from '@monaco-editor/react';
-import { Button } from '../ui/button';
-import { useToast } from '../../hooks/use-toast';
-import { Code, Braces, Zap } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { Editor, useMonaco } from "@monaco-editor/react";
+import { Button } from "../ui/button";
+import { useToast } from "../../hooks/use-toast";
+import { Code, Braces, Zap } from "lucide-react";
+import { useAppStore } from "../../store"; // Import the global store
 
 interface EnhancedCodeEditorProps {
   value: string;
   onChange: (value: string | undefined) => void;
   language: string;
   height?: string;
-  theme: string;
   placeholder?: string;
   snippets?: { name: string; code: string }[];
   readOnly?: boolean;
@@ -21,13 +20,64 @@ export const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
   onChange,
   language,
   height = "300px",
-  theme,
   placeholder,
   snippets = [],
-  readOnly = false
+  readOnly = false,
 }) => {
   const { toast } = useToast();
   const [showSnippets, setShowSnippets] = useState(false);
+  const monaco = useMonaco();
+  const { theme } = useAppStore();
+  const editorTheme = theme === "dark" ? "api-torch-dark" : "api-torch-light";
+
+  // Define custom themes when Monaco is loaded
+  useEffect(() => {
+    if (monaco) {
+      // Define a light theme that matches the app's light mode
+      monaco.editor.defineTheme("api-torch-light", {
+        base: "vs",
+        inherit: true,
+        rules: [
+          { token: "string", foreground: "0a7b4f" }, // Strings
+          { token: "keyword", foreground: "0550ae" }, // Keywords
+          { token: "comment", foreground: "747474" }, // Comments
+          { token: "number", foreground: "ca5621" }, // Numbers
+        ],
+        colors: {
+          "editor.background": "#f8f9fa",
+          "editor.foreground": "#1e293b",
+          "editor.lineHighlightBackground": "#f1f5f9",
+          "editorCursor.foreground": "#6366f1",
+          "editor.selectionBackground": "#e0e7ff",
+          "editorLineNumber.foreground": "#94a3b8",
+          "editorLineNumber.activeForeground": "#64748b",
+          "editorIndentGuide.background": "#e2e8f0",
+        },
+      });
+
+      // Define a dark theme that matches the app's dark mode
+      monaco.editor.defineTheme("api-torch-dark", {
+        base: "vs-dark",
+        inherit: true,
+        rules: [
+          { token: "string", foreground: "7dd3fc" }, // Strings
+          { token: "keyword", foreground: "c4b5fd" }, // Keywords
+          { token: "comment", foreground: "94a3b8" }, // Comments
+          { token: "number", foreground: "fda4af" }, // Numbers
+        ],
+        colors: {
+          "editor.background": "#0f172a",
+          "editor.foreground": "#e2e8f0",
+          "editor.lineHighlightBackground": "#1e293b",
+          "editorCursor.foreground": "#818cf8",
+          "editor.selectionBackground": "#312e81",
+          "editorLineNumber.foreground": "#64748b",
+          "editorLineNumber.activeForeground": "#94a3b8",
+          "editorIndentGuide.background": "#1e293b",
+        },
+      });
+    }
+  }, [monaco]);
 
   const handleInsertSnippet = (code: string) => {
     if (readOnly) return;
@@ -42,7 +92,7 @@ export const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
   const handleFormatCode = () => {
     if (readOnly) return;
     try {
-      if (language === 'json') {
+      if (language === "json") {
         const formatted = JSON.stringify(JSON.parse(value), null, 2);
         onChange(formatted);
         toast({
@@ -66,9 +116,12 @@ export const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
   };
 
   // Calculate the editor height based on whether we're showing the toolbar
-  const editorHeight = height === "100%" 
-    ? ((!readOnly || snippets.length > 0) ? "calc(100% - 32px)" : "100%") 
-    : height;
+  const editorHeight =
+    height === "100%"
+      ? !readOnly || snippets.length > 0
+        ? "calc(100% - 32px)"
+        : "100%"
+      : height;
 
   return (
     <div className="border rounded-md overflow-hidden h-full flex flex-col">
@@ -128,14 +181,14 @@ export const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
           language={language}
           value={value}
           onChange={readOnly ? undefined : onChange}
-          theme={theme}
+          theme={editorTheme}
           options={{
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
             fontSize: 13,
-            lineNumbers: 'on',
+            lineNumbers: "on",
             folding: true,
-            wordWrap: 'on',
+            wordWrap: "on",
             automaticLayout: true,
             tabSize: 2,
             formatOnPaste: !readOnly,
@@ -143,6 +196,9 @@ export const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
             suggestOnTriggerCharacters: !readOnly,
             quickSuggestions: !readOnly,
             readOnly: readOnly,
+            renderLineHighlight: "all",
+            fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+            fontLigatures: true,
           }}
         />
       </div>

@@ -1,27 +1,26 @@
-// src/components/KeyboardShortcutsModal.tsx
-import React from 'react';
-import { Button } from './ui/button';
-import { X } from 'lucide-react';
+import React from "react";
+import { Button } from "./ui/button";
+import { X } from "lucide-react";
 
 interface KeyboardShortcutsModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({ 
-  isOpen, 
-  onClose 
+export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
+  isOpen,
+  onClose,
 }) => {
   if (!isOpen) return null;
-  
+
   const shortcuts = [
-    { keys: ['Ctrl', 'Enter'], description: 'Send request' },
-    { keys: ['Ctrl', 'S'], description: 'Save request' },
-    { keys: ['Ctrl', 'N'], description: 'New request' },
-    { keys: ['Ctrl', 'E'], description: 'Focus environment selector' },
-    { keys: ['Ctrl', '/'], description: 'Show keyboard shortcuts' },
+    { keys: ["Ctrl", "Enter"], description: "Send request" },
+    { keys: ["Ctrl", "S"], description: "Save request" },
+    { keys: ["Ctrl", "N"], description: "New request" },
+    { keys: ["Ctrl", "E"], description: "Focus environment selector" },
+    { keys: ["Ctrl", "/"], description: "Show keyboard shortcuts" },
   ];
-  
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-background rounded-lg shadow-lg w-full max-w-md">
@@ -31,7 +30,7 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
             <X size={20} />
           </Button>
         </div>
-        
+
         <div className="p-4">
           <div className="space-y-2">
             {shortcuts.map((shortcut, index) => (
@@ -50,7 +49,7 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
               </div>
             ))}
           </div>
-          
+
           <div className="mt-4 text-center">
             <Button onClick={onClose}>Close</Button>
           </div>

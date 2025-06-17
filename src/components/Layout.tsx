@@ -1,13 +1,19 @@
-// src/components/Layout.tsx
-
-import React, { useState, useEffect, useRef } from 'react';
-import { useAppStore } from '../store';
-import { Sidebar } from './Sidebar';
-import { EnvironmentSelector } from './EnvironmentSelector';
-import { Navigation } from './Navigation';
-import { Moon, Sun, Keyboard, Menu, X, Maximize2, Minimize2 } from 'lucide-react';
-import { Button } from './ui/button';
-import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
+import React, { useState, useEffect, useRef } from "react";
+import { useAppStore } from "../store";
+import { Sidebar } from "./Sidebar";
+import { EnvironmentSelector } from "./EnvironmentSelector";
+import { Navigation } from "./Navigation";
+import {
+  Moon,
+  Sun,
+  Keyboard,
+  Menu,
+  X,
+  Maximize2,
+  Minimize2,
+} from "lucide-react";
+import { Button } from "./ui/button";
+import { KeyboardShortcutsModal } from "./KeyboardShortcutsModal";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,7 +21,8 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { theme, toggleTheme } = useAppStore();
-  const [isKeyboardShortcutsModalOpen, setIsKeyboardShortcutsModalOpen] = useState(false);
+  const [isKeyboardShortcutsModalOpen, setIsKeyboardShortcutsModalOpen] =
+    useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(280);
@@ -25,27 +32,27 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.documentElement.classList.toggle("dark", theme === "dark");
 
     const handleKeyDown = (e: KeyboardEvent) => {
       // Show keyboard shortcuts with Ctrl+/
-      if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+      if ((e.ctrlKey || e.metaKey) && e.key === "/") {
         e.preventDefault();
         setIsKeyboardShortcutsModalOpen(true);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown );
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [theme]);
 
   // Handle fullscreen toggle
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => {
+      document.documentElement.requestFullscreen().catch((err) => {
         console.error(`Error attempting to enable fullscreen: ${err.message}`);
       });
       setIsFullscreen(true);
@@ -78,13 +85,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
 
     if (isDraggingSidebar) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDraggingSidebar]);
 
@@ -156,7 +163,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             onClick={toggleTheme}
             className="text-foreground/80 hover:text-foreground"
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
           </Button>
         </div>
       </header>
@@ -178,7 +185,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             fixed md:relative z-50 md:z-auto h-[calc(100vh-3.5rem)] 
             transition-transform duration-300 ease-in-out
             md:translate-x-0 md:border-r md:border-border bg-card/50
-            ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           `}
           style={{ width: `${sidebarWidth}px` }}
         >
@@ -205,7 +212,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div
           className="flex-1 flex overflow-hidden pt-0 md:pt-0 pb-16 md:pb-0 w-full"
           style={{
-            width: '100%' // Always take full width
+            width: "100%", // Always take full width
           }}
         >
           {children}

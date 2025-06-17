@@ -1,12 +1,16 @@
-// src/components/request/UrlInput.tsx
-
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { Button } from '../ui/button';
-import { useToast } from '../../hooks/use-toast';
-import { Copy, Clock, Info, Check, AlertTriangle } from 'lucide-react';
-import { useAppStore } from '../../store';
-import type { Environment, KeyValuePair } from '../../types';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
+import { Button } from "../ui/button";
+import { useToast } from "../../hooks/use-toast";
+import { Copy, Clock, Info, Check, AlertTriangle } from "lucide-react";
+import { useAppStore } from "../../store";
+import type { Environment, KeyValuePair } from "../../types";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface UrlInputProps {
   value: string;
@@ -26,13 +30,15 @@ export const UrlInput: React.FC<UrlInputProps> = ({
   value,
   onChange,
   onSend,
-  recentUrls
+  recentUrls,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showVariablesPanel, setShowVariablesPanel] = useState(false);
-  const [variableSuggestions, setVariableSuggestions] = useState<KeyValuePair[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [variableSuggestions, setVariableSuggestions] = useState<
+    KeyValuePair[]
+  >([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isTypingVariable, setIsTypingVariable] = useState(false);
   const [typingStartIndex, setTypingStartIndex] = useState(-1);
 
@@ -44,21 +50,31 @@ export const UrlInput: React.FC<UrlInputProps> = ({
   const { getActiveWorkspace, getEnvironments } = useAppStore();
   const workspace = getActiveWorkspace();
   const environments = getEnvironments();
-  const activeEnvironment = environments.find(e => e.id === workspace?.activeEnvironmentId);
+  const activeEnvironment = environments.find(
+    (e) => e.id === workspace?.activeEnvironmentId,
+  );
 
   const activeVariables = useMemo(() => {
-    return activeEnvironment?.variables?.filter(v => v.enabled) || [];
+    return activeEnvironment?.variables?.filter((v) => v.enabled) || [];
   }, [activeEnvironment?.variables]);
 
-  const getVariableValue = useCallback((key: string): string | null => {
-    if (!activeEnvironment?.variables) return null;
-    const variable = activeEnvironment.variables.find(v => v.key === key && v.enabled);
-    return variable?.value || null;
-  }, [activeEnvironment?.variables]);
+  const getVariableValue = useCallback(
+    (key: string): string | null => {
+      if (!activeEnvironment?.variables) return null;
+      const variable = activeEnvironment.variables.find(
+        (v) => v.key === key && v.enabled,
+      );
+      return variable?.value || null;
+    },
+    [activeEnvironment?.variables],
+  );
 
-  const isVariableValid = useCallback((key: string): boolean => {
-    return getVariableValue(key) !== null;
-  }, [getVariableValue]);
+  const isVariableValid = useCallback(
+    (key: string): boolean => {
+      return getVariableValue(key) !== null;
+    },
+    [getVariableValue],
+  );
 
   const parseVariables = useCallback((url: string): VariableMatch[] => {
     const matches: VariableMatch[] = [];
@@ -70,7 +86,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
         fullMatch: match[0],
         variableName: match[1].trim(),
         startIndex: match.index,
-        endIndex: match.index + match[0].length
+        endIndex: match.index + match[0].length,
       });
     }
 
@@ -80,9 +96,10 @@ export const UrlInput: React.FC<UrlInputProps> = ({
   const filteredVariables = useMemo(() => {
     if (!searchTerm) return activeVariables;
 
-    return activeVariables.filter(variable =>
-      variable.key.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      variable.value.toLowerCase().includes(searchTerm.toLowerCase())
+    return activeVariables.filter(
+      (variable) =>
+        variable.key.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        variable.value.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [activeVariables, searchTerm]);
 
@@ -93,9 +110,9 @@ export const UrlInput: React.FC<UrlInputProps> = ({
     }
 
     const matchingUrls = recentUrls
-      .filter(url =>
-        url.toLowerCase().includes(value.toLowerCase()) &&
-        url !== value
+      .filter(
+        (url) =>
+          url.toLowerCase().includes(value.toLowerCase()) && url !== value,
       )
       .slice(0, 5);
 
@@ -108,10 +125,11 @@ export const UrlInput: React.FC<UrlInputProps> = ({
     const cursorPosition = inputRef.current.selectionStart || 0;
     const textBeforeCursor = value.substring(0, cursorPosition);
 
-    const lastOpenBrace = textBeforeCursor.lastIndexOf('{{');
-    const lastCloseBrace = textBeforeCursor.lastIndexOf('}}');
+    const lastOpenBrace = textBeforeCursor.lastIndexOf("{{");
+    const lastCloseBrace = textBeforeCursor.lastIndexOf("}}");
 
-    const isCurrentlyTyping = lastOpenBrace > lastCloseBrace && lastOpenBrace !== -1;
+    const isCurrentlyTyping =
+      lastOpenBrace > lastCloseBrace && lastOpenBrace !== -1;
 
     if (isCurrentlyTyping) {
       const variableStart = lastOpenBrace + 2;
@@ -121,14 +139,14 @@ export const UrlInput: React.FC<UrlInputProps> = ({
       setTypingStartIndex(lastOpenBrace);
       setSearchTerm(currentSearch);
 
-      const filtered = activeVariables.filter(variable =>
-        variable.key.toLowerCase().includes(currentSearch.toLowerCase())
+      const filtered = activeVariables.filter((variable) =>
+        variable.key.toLowerCase().includes(currentSearch.toLowerCase()),
       );
       setVariableSuggestions(filtered);
     } else {
       setIsTypingVariable(false);
       setTypingStartIndex(-1);
-      setSearchTerm('');
+      setSearchTerm("");
       setVariableSuggestions([]);
     }
   }, [value, activeVariables]);
@@ -150,7 +168,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
         parts.push(
           <span key={`text-${index}`} className="text-foreground">
             {value.substring(lastIndex, match.startIndex)}
-          </span>
+          </span>,
         );
       }
 
@@ -162,9 +180,10 @@ export const UrlInput: React.FC<UrlInputProps> = ({
           <PopoverTrigger asChild>
             <span
               className={`py-0.5 rounded cursor-pointer transition-colors font-medium
-                ${isValid
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400'
-                  : 'bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400'
+                ${
+                  isValid
+                    ? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400"
+                    : "bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400"
                 }`}
             >
               {match.fullMatch}
@@ -175,7 +194,9 @@ export const UrlInput: React.FC<UrlInputProps> = ({
             side="bottom"
             align="start"
           >
-            <div className={`p-3 ${isValid ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
+            <div
+              className={`p-3 ${isValid ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}`}
+            >
               <div className="flex items-center justify-between">
                 <div className="font-semibold">{match.variableName}</div>
                 {isValid ? (
@@ -192,12 +213,17 @@ export const UrlInput: React.FC<UrlInputProps> = ({
               <div className="mt-3 text-sm">
                 {isValid ? (
                   <>
-                    <div className="text-xs text-muted-foreground mb-2">Current Value:</div>
+                    <div className="text-xs text-muted-foreground mb-2">
+                      Current Value:
+                    </div>
                     <div className="p-2 bg-muted rounded font-mono text-xs break-all">
                       {variableValue}
                     </div>
                     <div className="mt-2 text-xs text-muted-foreground">
-                      From environment: <span className="font-medium">{activeEnvironment?.name}</span>
+                      From environment:{" "}
+                      <span className="font-medium">
+                        {activeEnvironment?.name}
+                      </span>
                     </div>
                   </>
                 ) : (
@@ -207,7 +233,10 @@ export const UrlInput: React.FC<UrlInputProps> = ({
                     </div>
                     {activeEnvironment ? (
                       <div className="mt-2 text-xs text-muted-foreground">
-                        Available in: <span className="font-medium">{activeEnvironment.name}</span>
+                        Available in:{" "}
+                        <span className="font-medium">
+                          {activeEnvironment.name}
+                        </span>
                       </div>
                     ) : (
                       <div className="mt-2 text-xs text-muted-foreground">
@@ -225,18 +254,22 @@ export const UrlInput: React.FC<UrlInputProps> = ({
                 size="sm"
                 className="text-xs"
                 onClick={() => {
-                  const newUrl = value.replace(match.fullMatch, '');
+                  const newUrl = value.replace(match.fullMatch, "");
                   onChange(newUrl);
                 }}
               >
                 Remove
-              </Button> {isValid && variableValue && (
+              </Button>{" "}
+              {isValid && variableValue && (
                 <Button
                   variant="ghost"
                   size="sm"
                   className="text-xs"
                   onClick={() => {
-                    const newUrl = value.replace(match.fullMatch, variableValue);
+                    const newUrl = value.replace(
+                      match.fullMatch,
+                      variableValue,
+                    );
                     onChange(newUrl);
                   }}
                 >
@@ -245,7 +278,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
               )}
             </div>
           </PopoverContent>
-        </Popover>
+        </Popover>,
       );
 
       lastIndex = match.endIndex;
@@ -255,25 +288,31 @@ export const UrlInput: React.FC<UrlInputProps> = ({
       parts.push(
         <span key="text-end" className="text-foreground">
           {value.substring(lastIndex)}
-        </span>
+        </span>,
       );
     }
 
     return <>{parts}</>;
-  }, [value, isVariableValid, getVariableValue, activeEnvironment?.name, parseVariables]);
+  }, [
+    value,
+    isVariableValid,
+    getVariableValue,
+    activeEnvironment?.name,
+    parseVariables,
+  ]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (variableSuggestions.length > 0) {
         insertVariable(variableSuggestions[0].key);
       } else {
         onSend();
       }
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setVariableSuggestions([]);
       setIsTypingVariable(false);
-    } else if (e.key === 'ArrowDown' && variableSuggestions.length > 0) {
+    } else if (e.key === "ArrowDown" && variableSuggestions.length > 0) {
       e.preventDefault();
     }
   };
@@ -294,7 +333,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
       toast({
         title: "Copy failed",
         description: "Failed to copy URL to clipboard",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -322,53 +361,59 @@ export const UrlInput: React.FC<UrlInputProps> = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const insertVariable = useCallback((variableKey: string) => {
-    if (!inputRef.current) return;
+  const insertVariable = useCallback(
+    (variableKey: string) => {
+      if (!inputRef.current) return;
 
-    let newValue: string;
-    let newCursorPos: number;
+      let newValue: string;
+      let newCursorPos: number;
 
-    if (isTypingVariable && typingStartIndex >= 0) {
-      const cursorPos = inputRef.current.selectionStart || 0;
-      const beforeTyping = value.substring(0, typingStartIndex);
-      const afterCursor = value.substring(cursorPos);
+      if (isTypingVariable && typingStartIndex >= 0) {
+        const cursorPos = inputRef.current.selectionStart || 0;
+        const beforeTyping = value.substring(0, typingStartIndex);
+        const afterCursor = value.substring(cursorPos);
 
-      newValue = `${beforeTyping}{{${variableKey}}}${afterCursor}`;
-      newCursorPos = typingStartIndex + variableKey.length + 4;
-    } else {
-      const cursorPos = inputRef.current.selectionStart || 0;
-      const textBefore = value.substring(0, cursorPos);
-      const textAfter = value.substring(cursorPos);
+        newValue = `${beforeTyping}{{${variableKey}}}${afterCursor}`;
+        newCursorPos = typingStartIndex + variableKey.length + 4;
+      } else {
+        const cursorPos = inputRef.current.selectionStart || 0;
+        const textBefore = value.substring(0, cursorPos);
+        const textAfter = value.substring(cursorPos);
 
-      newValue = `${textBefore}{{${variableKey}}}${textAfter}`;
-      newCursorPos = cursorPos + variableKey.length + 4;
-    }
-
-    onChange(newValue);
-
-    setIsTypingVariable(false);
-    setTypingStartIndex(-1);
-    setVariableSuggestions([]);
-    setSearchTerm('');
-
-    setTimeout(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-        inputRef.current.setSelectionRange(newCursorPos, newCursorPos);
+        newValue = `${textBefore}{{${variableKey}}}${textAfter}`;
+        newCursorPos = cursorPos + variableKey.length + 4;
       }
-    }, 0);
-  }, [value, onChange, isTypingVariable, typingStartIndex]);
+
+      onChange(newValue);
+
+      setIsTypingVariable(false);
+      setTypingStartIndex(-1);
+      setVariableSuggestions([]);
+      setSearchTerm("");
+
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          inputRef.current.setSelectionRange(newCursorPos, newCursorPos);
+        }
+      }, 0);
+    },
+    [value, onChange, isTypingVariable, typingStartIndex],
+  );
 
   return (
     <div className="relative flex-1">
-      <div className={`flex items-center border rounded-md transition-all ${isFocused ? 'border-primary ring-1 ring-primary/20' : 'border-input'
-        }`}>
+      <div
+        className={`flex items-center border rounded-md transition-all ${
+          isFocused ? "border-primary ring-1 ring-primary/20" : "border-input"
+        }`}
+      >
         <input
           ref={inputRef}
           type="text"
@@ -382,7 +427,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
             }, 150);
           }}
           onScroll={handleScroll}
-          style={{ paddingBottom: '3px' }}
+          style={{ paddingBottom: "3px" }}
           className="w-full px-3 py-0 h-10 bg-transparent rounded-lg focus:outline-none pr-20 relative z-10 text-transparent caret-primary"
           placeholder="https://api.example.com/endpoint"
           spellCheck={false}
@@ -391,12 +436,10 @@ export const UrlInput: React.FC<UrlInputProps> = ({
 
         <div
           ref={displayRef}
-          className="absolute inset-0 w-full px-2 py-1 h-10 bg-transparent rounded-md overflow-x-auto whitespace-nowrap pr-200 pointer-events-none flex items-center"
+          className="absolute inset-0 w-full px-2 py-1 h-10 bg-transparent rounded-md overflow-x-auto whitespace-nowrap pr-200 pointer-events-none flex items-center scrollbar-hide"
           style={{ zIndex: 1 }}
         >
-          <div className="text-md">
-            {renderHighlightedUrl}
-          </div>
+          <div className="text-md">{renderHighlightedUrl}</div>
         </div>
 
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1 z-20">
@@ -404,10 +447,11 @@ export const UrlInput: React.FC<UrlInputProps> = ({
             <Button
               variant="ghost"
               size="icon"
-              className={`h-7 w-7 ${showVariablesPanel
-                  ? 'text-primary bg-primary/10'
-                  : 'text-muted-foreground hover:text-foreground'
-                }`}
+              className={`h-7 w-7 ${
+                showVariablesPanel
+                  ? "text-primary bg-primary/10"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
               onClick={toggleVariablesPanel}
               title="Environment Variables"
             >
@@ -449,7 +493,10 @@ export const UrlInput: React.FC<UrlInputProps> = ({
                   inputRef.current?.focus();
                 }}
               >
-                <Clock size={14} className="mr-2 text-muted-foreground flex-shrink-0" />
+                <Clock
+                  size={14}
+                  className="mr-2 text-muted-foreground flex-shrink-0"
+                />
                 <span className="truncate">{url}</span>
               </button>
             ))}
@@ -461,7 +508,9 @@ export const UrlInput: React.FC<UrlInputProps> = ({
         <div className="absolute top-full left-0 right-0 mt-1 bg-popover border rounded-md shadow-lg z-30 max-h-60 overflow-y-auto">
           <div className="py-1">
             <div className="px-3 py-2 text-xs text-muted-foreground border-b">
-              {searchTerm ? `Variables matching "${searchTerm}"` : 'Available Variables'}
+              {searchTerm
+                ? `Variables matching "${searchTerm}"`
+                : "Available Variables"}
             </div>
             {variableSuggestions.map((variable) => (
               <button
@@ -473,8 +522,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
                   <div className="font-medium text-primary">
                     {variable.key}
                     {searchTerm && (
-                      <span className="text-xs text-muted-foreground ml-1">
-                      </span>
+                      <span className="text-xs text-muted-foreground ml-1"></span>
                     )}
                   </div>
                   <div className="text-xs text-muted-foreground truncate">
@@ -488,40 +536,45 @@ export const UrlInput: React.FC<UrlInputProps> = ({
         </div>
       )}
 
-      {showVariablesPanel && activeEnvironment && activeVariables.length > 0 && (
-        <div ref={panelRef} className="absolute top-full right-0 mt-1 bg-popover border rounded-md shadow-lg z-50 w-80">
-          <div className="p-3 border-b">
-            <h4 className="text-sm font-medium">{activeEnvironment.name}</h4>
-            <p className="text-xs text-muted-foreground mt-1">
-              Click to insert variable into URL
-            </p>
-          </div>
-          <div className="max-h-60 overflow-y-auto">
-            {activeVariables.map((variable) => (
-              <button
-                key={variable.id}
-                className="flex items-center justify-between w-full px-3 py-3 text-sm text-left hover:bg-accent focus:bg-accent focus:outline-none border-b border-border/30 last:border-0"
-                onClick={() => {
-                  insertVariable(variable.key);
-                  setShowVariablesPanel(false);
-                }}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-green-600 dark:text-green-400 mb-1">
-                    {`{{${variable.key}}}`}
+      {showVariablesPanel &&
+        activeEnvironment &&
+        activeVariables.length > 0 && (
+          <div
+            ref={panelRef}
+            className="absolute top-full right-0 mt-1 bg-popover border rounded-md shadow-lg z-50 w-80"
+          >
+            <div className="p-3 border-b">
+              <h4 className="text-sm font-medium">{activeEnvironment.name}</h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                Click to insert variable into URL
+              </p>
+            </div>
+            <div className="max-h-60 overflow-y-auto">
+              {activeVariables.map((variable) => (
+                <button
+                  key={variable.id}
+                  className="flex items-center justify-between w-full px-3 py-3 text-sm text-left hover:bg-accent focus:bg-accent focus:outline-none border-b border-border/30 last:border-0"
+                  onClick={() => {
+                    insertVariable(variable.key);
+                    setShowVariablesPanel(false);
+                  }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-green-600 dark:text-green-400 mb-1">
+                      {`{{${variable.key}}}`}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {variable.value}
+                    </div>
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {variable.value}
+                  <div className="text-xs text-primary ml-2 px-2 py-1 bg-primary/10 rounded">
+                    Insert
                   </div>
-                </div>
-                <div className="text-xs text-primary ml-2 px-2 py-1 bg-primary/10 rounded">
-                  Insert
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// src/components/ui/toaster.tsx
 import {
   Toast,
   ToastClose,

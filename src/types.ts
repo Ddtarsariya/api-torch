@@ -1,11 +1,29 @@
-// src/types.ts
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'OPTIONS' | 'HEAD';
+// File: src/types.ts
+export type HttpMethod =
+  | "GET"
+  | "POST"
+  | "PUT"
+  | "DELETE"
+  | "PATCH"
+  | "OPTIONS"
+  | "HEAD";
 
 export interface KeyValuePair {
   id: string;
   key: string;
   value: string;
   enabled: boolean;
+}
+
+export interface RequestBody {
+  contentType:
+    | "json"
+    | "form-data"
+    | "x-www-form-urlencoded"
+    | "raw"
+    | "binary"
+    | "none";
+  content: string | KeyValuePair[];
 }
 
 export interface ApiRequest {
@@ -15,31 +33,19 @@ export interface ApiRequest {
   url: string;
   headers: KeyValuePair[];
   params: KeyValuePair[];
-  body: {
-    contentType: 'none' | 'json' | 'form-data' | 'x-www-form-urlencoded' | 'raw';
-    content: string | KeyValuePair[];
-  };
+  body: RequestBody;
   preRequestScript: string;
   testScript: string;
-  folderId?: string;
+  collectionId?: string;
 }
 
 export interface ApiResponse {
-  id: string;
-  requestId: string;
   status: number;
   statusText: string;
   headers: Record<string, string>;
-  body: string;
+  data: any;
   time: number;
   size: number;
-  timestamp: number;
-}
-
-export interface TestResult {
-  name: string;
-  passed: boolean;
-  error?: string;
 }
 
 export interface Environment {
@@ -48,8 +54,32 @@ export interface Environment {
   variables: KeyValuePair[];
 }
 
+export interface Collection {
+  id: string;
+  name: string;
+  description?: string;
+  items: (Collection | ApiRequest)[];
+}
+
 export interface Workspace {
   id: string;
   name: string;
-  activeEnvironmentId?: string;
+  collections: Collection[];
+  environments: Environment[];
+  activeEnvironmentId: string | null;
+}
+
+export interface TestResult {
+  name: string;
+  passed: boolean;
+  message?: string;
+}
+
+export interface RunResult {
+  requestId: string;
+  requestName: string;
+  response: ApiResponse | null;
+  error?: string;
+  testResults: TestResult[];
+  duration: number;
 }

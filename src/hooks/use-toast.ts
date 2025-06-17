@@ -1,4 +1,3 @@
-// src/hooks/use-toast.ts
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,19 +20,19 @@ export function useToast() {
     ({ ...props }: ToastOptions) => {
       const id = uuidv4();
       const newToast = { id, ...props };
-      
+
       setToasts((toasts) => [...toasts, newToast]);
-      
+
       return id;
     },
-    [setToasts]
+    [setToasts],
   );
 
   const dismiss = useCallback(
     (id: string) => {
       setToasts((toasts) => toasts.filter((toast) => toast.id !== id));
     },
-    [setToasts]
+    [setToasts],
   );
 
   useEffect(() => {
