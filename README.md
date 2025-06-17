@@ -56,12 +56,6 @@ Take a look at some key views of **API-Torch**:
 
 ---
 
-## 🖥️ Screenshots
-
-_Coming soon – visual walkthroughs of the features above!_
-
----
-
 ## 🚀 Getting Started
 
 ### 🔧 Prerequisites
