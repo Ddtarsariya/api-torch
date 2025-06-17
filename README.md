@@ -68,7 +68,7 @@ Take a look at some key views of **API-Torch**:
 Clone the repository:
 
 ```bash
-git clone [https://github.com/Ddtarsariya/api-torch.git](https://github.com/Ddtarsariya/api-torch.git) # Replace yourusername with the actual GitHub username
+git clone [https://github.com/Ddtarsariya/api-torch.git](https://github.com/Ddtarsariya/api-torch.git)
 cd api-torch
 ```
 
