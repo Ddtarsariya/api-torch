@@ -116,11 +116,28 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
           {/* Logo */}
           <div className="flex items-center">
-            <div className="h-8 w-8 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mr-2">
-              <span className="text-white font-bold text-lg">AT</span>
+            <div className="h-8 w-8 rounded-md flex items-center justify-center mr-2">
+              <img
+                src="/logo-no-bg.png"
+                alt="API Torch Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">
-              API Torch
+            <h1
+              className="text-xl font-bold bg-clip-text text-transparent"
+              style={{
+                backgroundImage: "linear-gradient(to right, #0C1C35, #0C1C35)",
+              }}
+            >
+              API
+            </h1>
+            <h1
+              className="text-xl font-bold bg-clip-text text-transparent"
+              style={{
+                backgroundImage: "linear-gradient(to right, #FF6905, #FF6905)",
+              }}
+            >
+              Torch
             </h1>
           </div>
 

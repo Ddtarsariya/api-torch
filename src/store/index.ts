@@ -1,9 +1,15 @@
-// File: src\store\index.ts
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
-import type { Workspace, Collection, ApiRequest, Environment, ApiResponse, RunResult, KeyValuePair } from "../types";
+import type {
+  Workspace,
+  Collection,
+  ApiRequest,
+  Environment,
+  ApiResponse,
+  RunResult,
+  KeyValuePair,
+} from "../types";
 
 interface AppState {
   workspaces: Workspace[];
@@ -25,10 +31,13 @@ interface AppState {
 
   // Collection actions
   getCollections: () => Collection[];
-  createCollection: (name: string, description?: string, items?: (Collection | ApiRequest)[]) => void;
+  createCollection: (
+    name: string,
+    description?: string,
+    items?: (Collection | ApiRequest)[],
+  ) => void;
   updateCollection: (id: string, data: Partial<Collection>) => void;
   deleteCollection: (id: string) => void;
-
 
   // Request actions
   getRequests: () => ApiRequest[];
@@ -195,7 +204,11 @@ export const useAppStore = create<AppState>()(
         return get().getActiveWorkspace().collections;
       },
 
-      createCollection: (name: string, description?: string, items: (Collection | ApiRequest)[] = []) => {
+      createCollection: (
+        name: string,
+        description?: string,
+        items: (Collection | ApiRequest)[] = [],
+      ) => {
         const newCollection: Collection = {
           id: uuidv4(),
           name,
@@ -222,13 +235,13 @@ export const useAppStore = create<AppState>()(
             workspaces: state.workspaces.map((w) =>
               w.id === workspace.id
                 ? {
-                  ...w,
-                  collections: w.collections.map((collection) =>
-                    collection.id === id
-                      ? { ...collection, ...data }
-                      : collection,
-                  ),
-                }
+                    ...w,
+                    collections: w.collections.map((collection) =>
+                      collection.id === id
+                        ? { ...collection, ...data }
+                        : collection,
+                    ),
+                  }
                 : w,
             ),
           };
@@ -242,11 +255,11 @@ export const useAppStore = create<AppState>()(
             workspaces: state.workspaces.map((w) =>
               w.id === workspace.id
                 ? {
-                  ...w,
-                  collections: w.collections.filter(
-                    (c: { id: string }) => c.id !== id,
-                  ),
-                }
+                    ...w,
+                    collections: w.collections.filter(
+                      (c: { id: string }) => c.id !== id,
+                    ),
+                  }
                 : w,
             ),
           };
@@ -361,12 +374,12 @@ export const useAppStore = create<AppState>()(
             workspaces: state.workspaces.map((w) =>
               w.id === workspace.id
                 ? {
-                  ...w,
-                  collections: w.collections.map((collection) => ({
-                    ...collection,
-                    items: updateRequestInItems(collection.items),
-                  })),
-                }
+                    ...w,
+                    collections: w.collections.map((collection) => ({
+                      ...collection,
+                      items: updateRequestInItems(collection.items),
+                    })),
+                  }
                 : w,
             ),
           };
@@ -397,12 +410,12 @@ export const useAppStore = create<AppState>()(
             workspaces: state.workspaces.map((w) =>
               w.id === workspace.id
                 ? {
-                  ...w,
-                  collections: w.collections.map((collection) => ({
-                    ...collection,
-                    items: removeRequestFromItems(collection.items),
-                  })),
-                }
+                    ...w,
+                    collections: w.collections.map((collection) => ({
+                      ...collection,
+                      items: removeRequestFromItems(collection.items),
+                    })),
+                  }
                 : w,
             ),
             activeRequestId:
@@ -437,7 +450,7 @@ export const useAppStore = create<AppState>()(
             ),
           };
         });
-        
+
         return newEnvironment.id; // Return the ID for further operations
       },
 
@@ -449,11 +462,11 @@ export const useAppStore = create<AppState>()(
             workspaces: state.workspaces.map((w) =>
               w.id === workspace.id
                 ? {
-                  ...w,
-                  environments: w.environments.map((env) =>
-                    env.id === id ? { ...env, ...data } : env,
-                  ),
-                }
+                    ...w,
+                    environments: w.environments.map((env) =>
+                      env.id === id ? { ...env, ...data } : env,
+                    ),
+                  }
                 : w,
             ),
           };
@@ -467,15 +480,15 @@ export const useAppStore = create<AppState>()(
             workspaces: state.workspaces.map((w) =>
               w.id === workspace.id
                 ? {
-                  ...w,
-                  environments: w.environments.filter(
-                    (e: { id: string }) => e.id !== id,
-                  ),
-                  activeEnvironmentId:
-                    w.activeEnvironmentId === id
-                      ? null
-                      : w.activeEnvironmentId,
-                }
+                    ...w,
+                    environments: w.environments.filter(
+                      (e: { id: string }) => e.id !== id,
+                    ),
+                    activeEnvironmentId:
+                      w.activeEnvironmentId === id
+                        ? null
+                        : w.activeEnvironmentId,
+                  }
                 : w,
             ),
           };

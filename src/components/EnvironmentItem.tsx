@@ -1,9 +1,21 @@
-// src/components/EnvironmentItem.tsx
 import React, { useState } from "react";
 import { useAppStore } from "../store";
 import { Button } from "./ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { MoreHorizontal, Edit, Trash, Copy, Server, Globe, CheckCircle2 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import {
+  MoreHorizontal,
+  Edit,
+  Trash,
+  Copy,
+  Server,
+  Globe,
+  CheckCircle2,
+} from "lucide-react";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import type { Environment } from "../types";
 import { Badge } from "./ui/badge";

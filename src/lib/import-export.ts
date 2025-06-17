@@ -9,8 +9,12 @@ import type {
 } from "../types";
 import { v4 as uuidv4 } from "uuid";
 
-function reconstructUrl(protocol: string, host: string[], path: string[]): string {
-  return `${protocol}://${host.join('.')}/${path.join('/')}`;
+function reconstructUrl(
+  protocol: string,
+  host: string[],
+  path: string[],
+): string {
+  return `${protocol}://${host.join(".")}/${path.join("/")}`;
 }
 
 // Postman Collection Format (simplified)
@@ -60,13 +64,13 @@ function parseUrl(url: string) {
   try {
     const urlObj = new URL(url);
     return {
-      protocol: urlObj.protocol.replace(':', ''),
-      host: urlObj.hostname.split('.'),
-      path: urlObj.pathname.split('/').filter(Boolean),
+      protocol: urlObj.protocol.replace(":", ""),
+      host: urlObj.hostname.split("."),
+      path: urlObj.pathname.split("/").filter(Boolean),
     };
   } catch {
     return {
-      protocol: '',
+      protocol: "",
       host: [],
       path: [],
     };
@@ -80,7 +84,8 @@ export function exportCollection(collection: Collection): string {
       name: collection.name,
       description: collection.description,
       _postman_id: collection.id,
-      schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      schema:
+        "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     },
     item: convertItemsToPostmanFormat(collection.items),
   };
@@ -104,8 +109,9 @@ export function importCollection(json: string): Collection {
   }
 }
 
-
-function convertItemsToPostmanFormat(items: (Collection | ApiRequest)[]): PostmanItem[] {
+function convertItemsToPostmanFormat(
+  items: (Collection | ApiRequest)[],
+): PostmanItem[] {
   return items.map((item) => {
     if ("method" in item) {
       const request = item as ApiRequest;
@@ -119,21 +125,34 @@ function convertItemsToPostmanFormat(items: (Collection | ApiRequest)[]): Postma
 
       let body;
       if (request.method !== "GET" && request.body.contentType !== "none") {
-        if (request.body.contentType === "json" || request.body.contentType === "raw") {
+        if (
+          request.body.contentType === "json" ||
+          request.body.contentType === "raw"
+        ) {
           body = {
             mode: "raw",
             raw: request.body.content as string,
           };
-        } else if (request.body.contentType === "form-data" || request.body.contentType === "x-www-form-urlencoded") {
-          const formItems = (request.body.content as KeyValuePair[]).map((item) => ({
-            key: item.key,
-            value: item.value,
-            disabled: !item.enabled,
-          }));
+        } else if (
+          request.body.contentType === "form-data" ||
+          request.body.contentType === "x-www-form-urlencoded"
+        ) {
+          const formItems = (request.body.content as KeyValuePair[]).map(
+            (item) => ({
+              key: item.key,
+              value: item.value,
+              disabled: !item.enabled,
+            }),
+          );
 
           body = {
-            mode: request.body.contentType === "form-data" ? "formdata" : "urlencoded",
-            [request.body.contentType === "form-data" ? "formdata" : "urlencoded"]: formItems,
+            mode:
+              request.body.contentType === "form-data"
+                ? "formdata"
+                : "urlencoded",
+            [request.body.contentType === "form-data"
+              ? "formdata"
+              : "urlencoded"]: formItems,
           };
         }
       }
@@ -167,7 +186,9 @@ function convertItemsToPostmanFormat(items: (Collection | ApiRequest)[]): Postma
   });
 }
 
-function convertPostmanItemsToOurFormat(items: PostmanItem[]): (Collection | ApiRequest)[] {
+function convertPostmanItemsToOurFormat(
+  items: PostmanItem[],
+): (Collection | ApiRequest)[] {
   return items.flatMap((item) => {
     if (item.item) {
       return {
@@ -184,7 +205,11 @@ function convertPostmanItemsToOurFormat(items: PostmanItem[]): (Collection | Api
         enabled: !q.disabled,
       }));
 
-      const url = reconstructUrl(request.url.protocol || '', request.url.host || [], request.url.path || []);
+      const url = reconstructUrl(
+        request.url.protocol || "",
+        request.url.host || [],
+        request.url.path || [],
+      );
 
       let body: RequestBody = { contentType: "none", content: "" };
       if (request.body) {
@@ -242,7 +267,7 @@ function convertPostmanItemsToOurFormat(items: PostmanItem[]): (Collection | Api
 // File: src\lib\import-export.ts
 
 // Import OpenAPI JSON
-export function importOpenAPI(json: string): { 
+export function importOpenAPI(json: string): {
   id: string;
   name: string;
   description?: string;
@@ -251,7 +276,8 @@ export function importOpenAPI(json: string): {
 } {
   try {
     const openApiData = JSON.parse(json);
-    const openApiVersion = openApiData.openapi || openApiData.swagger || "3.0.0";
+    const openApiVersion =
+      openApiData.openapi || openApiData.swagger || "3.0.0";
 
     const collection: Collection = {
       id: uuidv4(),
@@ -267,29 +293,41 @@ export function importOpenAPI(json: string): {
       baseUrl = openApiData.servers[0].url;
     } else if (openApiData.host) {
       // OpenAPI 2.0 (Swagger) has host and basePath
-      const scheme = openApiData.schemes && openApiData.schemes.length > 0 
-        ? openApiData.schemes[0] 
-        : "https";
+      const scheme =
+        openApiData.schemes && openApiData.schemes.length > 0
+          ? openApiData.schemes[0]
+          : "https";
       baseUrl = `${scheme}://${openApiData.host}${openApiData.basePath || ""}`;
     }
 
     // Convert OpenAPI paths to ApiRequest items
     for (const path in openApiData.paths) {
       const pathItem = openApiData.paths[path];
-      
+
       // Skip if pathItem is a reference
       if (pathItem.$ref) continue;
 
       // Process HTTP methods (operations)
-      const methods = ["get", "post", "put", "delete", "patch", "options", "head"];
+      const methods = [
+        "get",
+        "post",
+        "put",
+        "delete",
+        "patch",
+        "options",
+        "head",
+      ];
       for (const method of methods) {
         if (pathItem[method]) {
           const operation = pathItem[method];
-          
+
           // Create ApiRequest for this operation
           const apiRequest: ApiRequest = {
             id: uuidv4(),
-            name: operation.summary || operation.operationId || `${method.toUpperCase()} ${path}`,
+            name:
+              operation.summary ||
+              operation.operationId ||
+              `${method.toUpperCase()} ${path}`,
             method: method.toUpperCase() as any,
             // Use {{baseUrl}} variable instead of hardcoded base URL
             url: `{{baseUrl}}${path}`,
@@ -344,17 +382,21 @@ export function importOpenAPI(json: string): {
 
           // Handle request body
           if (operation.requestBody) {
-            const contentType = Object.keys(operation.requestBody.content || {})[0];
+            const contentType = Object.keys(
+              operation.requestBody.content || {},
+            )[0];
             if (contentType) {
               if (contentType === "application/json") {
                 apiRequest.body = {
                   contentType: "json",
                   content: JSON.stringify(
-                    operation.requestBody.content[contentType].example || 
-                    generateExampleFromSchema(operation.requestBody.content[contentType].schema) || 
-                    {},
+                    operation.requestBody.content[contentType].example ||
+                      generateExampleFromSchema(
+                        operation.requestBody.content[contentType].schema,
+                      ) ||
+                      {},
                     null,
-                    2
+                    2,
                   ),
                 };
               } else if (contentType === "multipart/form-data") {
@@ -377,14 +419,25 @@ export function importOpenAPI(json: string): {
           }
 
           // Add security headers if defined
-          if (openApiData.components && openApiData.components.securitySchemes) {
+          if (
+            openApiData.components &&
+            openApiData.components.securitySchemes
+          ) {
             // Handle operation-specific security requirements
             if (operation.security && operation.security.length > 0) {
-              addSecurityHeaders(apiRequest, operation.security, openApiData.components.securitySchemes);
-            } 
+              addSecurityHeaders(
+                apiRequest,
+                operation.security,
+                openApiData.components.securitySchemes,
+              );
+            }
             // Handle global security requirements
             else if (openApiData.security && openApiData.security.length > 0) {
-              addSecurityHeaders(apiRequest, openApiData.security, openApiData.components.securitySchemes);
+              addSecurityHeaders(
+                apiRequest,
+                openApiData.security,
+                openApiData.components.securitySchemes,
+              );
             }
           }
 
@@ -404,7 +457,7 @@ export function importOpenAPI(json: string): {
           key: "baseUrl",
           value: baseUrl,
           enabled: true,
-        }
+        },
       ],
     };
 
@@ -423,7 +476,7 @@ export function importOpenAPI(json: string): {
 function addSecurityHeaders(
   apiRequest: ApiRequest,
   securityRequirements: any[],
-  securitySchemes: any
+  securitySchemes: any,
 ) {
   for (const requirement of securityRequirements) {
     for (const schemeName in requirement) {
@@ -471,7 +524,9 @@ function generateExampleFromSchema(schema: any): any {
       const result: any = {};
       if (schema.properties) {
         for (const propName in schema.properties) {
-          result[propName] = generateExampleFromSchema(schema.properties[propName]);
+          result[propName] = generateExampleFromSchema(
+            schema.properties[propName],
+          );
         }
       }
       return result;

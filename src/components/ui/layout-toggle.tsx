@@ -2,7 +2,12 @@ import React from "react";
 import { Button } from "./button";
 import { PanelLeft, PanelBottom } from "lucide-react";
 import { useAppStore } from "../../store";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./tooltip";
 
 interface LayoutToggleProps {
   className?: string;
@@ -13,7 +18,7 @@ export const LayoutToggle: React.FC<LayoutToggleProps> = ({ className }) => {
 
   const toggleLayout = () => {
     setLayoutOrientation(
-      layoutOrientation === "horizontal" ? "vertical" : "horizontal"
+      layoutOrientation === "horizontal" ? "vertical" : "horizontal",
     );
   };
 

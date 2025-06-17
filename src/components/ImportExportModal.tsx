@@ -1,26 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { useAppStore } from '../store';
-import { Button } from './ui/button';
+import React, { useEffect, useState } from "react";
+import { useAppStore } from "../store";
+import { Button } from "./ui/button";
 import {
   importCollection,
   exportCollection,
   importEnvironment,
   exportEnvironment,
-  importOpenAPI
-} from '../lib/import-export';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
-import { CustomSelect } from './ui/select';
+  importOpenAPI,
+} from "../lib/import-export";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "./ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+import { CustomSelect } from "./ui/select";
 interface ImportExportModalProps {
   isOpen: boolean;
   onClose: () => void;
-  type: 'collection' | 'environment';
+  type: "collection" | "environment";
 }
 
 export const ImportExportModal: React.FC<ImportExportModalProps> = ({
   isOpen,
   onClose,
-  type
+  type,
 }) => {
   const {
     getCollections,
@@ -28,36 +34,35 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
     createCollection,
     createEnvironment,
     updateCollection,
-    updateEnvironment
+    updateEnvironment,
   } = useAppStore();
 
-  const [activeTab, setActiveTab] = useState<'import' | 'export'>('import');
-  const [importText, setImportText] = useState('');
-  const [exportText, setExportText] = useState('');
-  const [selectedItem, setSelectedItem] = useState('');
-  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<"import" | "export">("import");
+  const [importText, setImportText] = useState("");
+  const [exportText, setExportText] = useState("");
+  const [selectedItem, setSelectedItem] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const collections = getCollections();
   const environments = getEnvironments();
 
-
   const handleImport = async () => {
-    setError('');
+    setError("");
     setIsLoading(true);
-  
+
     try {
       const parsedData = JSON.parse(importText);
-      
-      if (type === 'collection') {
+
+      if (type === "collection") {
         let collection;
         let environment;
-  
+
         if (parsedData.openapi) {
           // Handle OpenAPI import
           const result = importOpenAPI(importText);
           collection = result;
-          
+
           // Create baseUrl environment if it exists in the OpenAPI spec
           if (result.environment) {
             environment = result.environment;
@@ -66,10 +71,14 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
           // Handle Postman import
           collection = importCollection(importText);
         }
-  
+
         // Create the collection
-        createCollection(collection.name, collection.description, collection.items);
-  
+        createCollection(
+          collection.name,
+          collection.description,
+          collection.items,
+        );
+
         // Create the environment if it exists
         if (environment) {
           // Use the enhanced createEnvironment function with variables
@@ -78,11 +87,11 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
       } else {
         // Handle environment import
         const environment = importEnvironment(importText);
-        
+
         // Use the enhanced createEnvironment function with variables
         createEnvironment(environment.name, environment.variables);
       }
-  
+
       onClose();
     } catch (error) {
       console.error("Import error:", error);
@@ -92,15 +101,14 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
     }
   };
 
-
   const handleExport = () => {
-    setError('');
+    setError("");
     try {
-      if (type === 'collection') {
-        const collection = collections.find(c => c.id === selectedItem);
+      if (type === "collection") {
+        const collection = collections.find((c) => c.id === selectedItem);
         if (collection) setExportText(exportCollection(collection));
       } else {
-        const environment = environments.find(e => e.id === selectedItem);
+        const environment = environments.find((e) => e.id === selectedItem);
         if (environment) setExportText(exportEnvironment(environment));
       }
     } catch {
@@ -114,16 +122,26 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
 
   if (!isOpen) return null;
 
-  const items = type === 'collection' ? collections : environments;
+  const items = type === "collection" ? collections : environments;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{type === 'collection' ? 'Collection' : 'Environment'} Import/Export</DialogTitle>
+          <DialogTitle>
+            {type === "collection" ? "Collection" : "Environment"} Import/Export
+          </DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'import' | 'export')}>
+        <Tabs
+          value={activeTab}
+          onValueChange={(v) => setActiveTab(v as "import" | "export")}
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="import">Import</TabsTrigger>
             <TabsTrigger value="export">Export</TabsTrigger>
@@ -135,17 +153,22 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
               <textarea
                 className="w-full h-64 p-2 border rounded font-mono text-sm"
                 value={importText}
-                onChange={e => setImportText(e.target.value)}
+                onChange={(e) => setImportText(e.target.value)}
                 disabled={isLoading}
               />
               {error && <div className="mt-2 text-red-500">{error}</div>}
 
               <div className="mt-4 flex justify-end">
-                <Button variant="outline" className="mr-2" onClick={onClose} disabled={isLoading}>
+                <Button
+                  variant="outline"
+                  className="mr-2"
+                  onClick={onClose}
+                  disabled={isLoading}
+                >
                   Cancel
                 </Button>
                 <Button onClick={handleImport} disabled={isLoading}>
-                  {isLoading ? 'Importing...' : 'Import'}
+                  {isLoading ? "Importing..." : "Import"}
                 </Button>
               </div>
             </div>
@@ -156,7 +179,9 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
               <label className="block mb-2">Select {type}:</label>
 
               {items.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No {type}s available to export.</p>
+                <p className="text-sm text-muted-foreground">
+                  No {type}s available to export.
+                </p>
               ) : (
                 <CustomSelect
                   value={selectedItem}
@@ -191,10 +216,14 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
           </TabsContent>
         </Tabs>
 
-        {activeTab === 'export' && (
+        {activeTab === "export" && (
           <DialogFooter className="flex justify-between items-center">
             {exportText && (
-              <Button onClick={handleCopyToClipboard} size="sm" variant="outline">
+              <Button
+                onClick={handleCopyToClipboard}
+                size="sm"
+                variant="outline"
+              >
                 Copy to Clipboard
               </Button>
             )}

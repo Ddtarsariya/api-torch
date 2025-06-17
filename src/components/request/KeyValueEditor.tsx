@@ -1,5 +1,3 @@
-// src/components/request/KeyValueEditor.tsx
-
 import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "../ui/button";
@@ -169,9 +167,13 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
     );
   };
 
-  const validateKeyValuePairs = (pairs: { key: string; value: string }[]): boolean => {
+  const validateKeyValuePairs = (
+    pairs: { key: string; value: string }[],
+  ): boolean => {
     // Check for duplicate keys
-    const keys = pairs.map(pair => pair.key.trim()).filter(key => key !== "");
+    const keys = pairs
+      .map((pair) => pair.key.trim())
+      .filter((key) => key !== "");
     const uniqueKeys = new Set(keys);
 
     if (keys.length !== uniqueKeys.size) {
@@ -184,7 +186,9 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
     }
 
     // Check for empty keys (if there's a value)
-    const invalidPairs = pairs.filter(pair => pair.key.trim() === "" && pair.value.trim() !== "");
+    const invalidPairs = pairs.filter(
+      (pair) => pair.key.trim() === "" && pair.value.trim() !== "",
+    );
     if (invalidPairs.length > 0) {
       toast({
         title: "Validation Error",
@@ -209,31 +213,38 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
         });
         return;
       }
-  
+
       // Try to parse as JSON first
       try {
         const jsonData = JSON.parse(text);
-  
+
         // Handle array of objects with key/value properties
         if (Array.isArray(jsonData) && jsonData.length > 0) {
           // Check if the array contains objects with key/value properties
           const hasKeyValueFormat = jsonData.every(
-            item => typeof item === 'object' && item !== null && 'key' in item && 'value' in item
+            (item) =>
+              typeof item === "object" &&
+              item !== null &&
+              "key" in item &&
+              "value" in item,
           );
-  
+
           if (hasKeyValueFormat) {
             // Convert the array of objects to KeyValuePair format
-            const newItems = jsonData.map(item => ({
+            const newItems = jsonData.map((item) => ({
               id: uuidv4(),
               key: item.key || "",
-              value: typeof item.value === "string" ? item.value : JSON.stringify(item.value),
+              value:
+                typeof item.value === "string"
+                  ? item.value
+                  : JSON.stringify(item.value),
               enabled: item.enabled !== undefined ? item.enabled : true,
             }));
-  
+
             if (!validateKeyValuePairs(newItems)) {
               return;
             }
-  
+
             onChange([...items, ...newItems]);
             toast({
               title: "Bulk paste successful",
@@ -243,29 +254,34 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
             return;
           }
         }
-  
+
         // Handle regular object with key-value pairs
-        if (typeof jsonData === 'object' && jsonData !== null && !Array.isArray(jsonData)) {
+        if (
+          typeof jsonData === "object" &&
+          jsonData !== null &&
+          !Array.isArray(jsonData)
+        ) {
           const newItems = Object.entries(jsonData).map(([key, value]) => ({
             id: uuidv4(),
             key,
             value: typeof value === "string" ? value : JSON.stringify(value),
             enabled: true,
           }));
-  
+
           if (newItems.length === 0) {
             toast({
               title: "No items found",
-              description: "The JSON object doesn't contain any key-value pairs.",
+              description:
+                "The JSON object doesn't contain any key-value pairs.",
               variant: "destructive",
             });
             return;
           }
-  
+
           if (!validateKeyValuePairs(newItems)) {
             return;
           }
-  
+
           onChange([...items, ...newItems]);
           toast({
             title: "Bulk paste successful",
@@ -274,18 +290,19 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
           });
           return;
         }
-  
+
         // If we get here, the JSON format wasn't recognized
         toast({
           title: "Invalid JSON format",
-          description: "JSON must be an object with key-value pairs or an array of key-value objects.",
+          description:
+            "JSON must be an object with key-value pairs or an array of key-value objects.",
           variant: "destructive",
         });
         return;
       } catch {
         // Try line by line format (key: value or key=value)
         const lines = text.split("\n").filter((line) => line.trim());
-  
+
         if (lines.length === 0) {
           toast({
             title: "No valid content",
@@ -294,7 +311,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
           });
           return;
         }
-  
+
         const newItems = lines.map((line) => {
           let key = "",
             value = "";
@@ -305,7 +322,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
           } else {
             key = line.trim();
           }
-  
+
           return {
             id: uuidv4(),
             key,
@@ -313,11 +330,11 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
             enabled: true,
           };
         });
-  
+
         if (!validateKeyValuePairs(newItems)) {
           return;
         }
-  
+
         onChange([...items, ...newItems]);
         toast({
           title: "Bulk paste successful",
@@ -333,7 +350,6 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
       });
     }
   };
-  
 
   const handleDragStart = (id: string, e: React.DragEvent) => {
     setDraggedItemId(id);
@@ -452,9 +468,10 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
   const handleOpenBulkEdit = () => {
     // If items are selected, use those for initial content
     // Otherwise, use all items
-    const itemsToEdit = selectedItems.length > 0
-      ? items.filter(item => selectedItems.includes(item.id))
-      : items;
+    const itemsToEdit =
+      selectedItems.length > 0
+        ? items.filter((item) => selectedItems.includes(item.id))
+        : items;
 
     const bulkEditData = itemsToEdit
       .map((item) => `${item.key}: ${item.value}`)
@@ -479,8 +496,9 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
       }
 
       // Parse the lines into key-value pairs
-      const parsedPairs = lines.map(line => {
-        let key = "", value = "";
+      const parsedPairs = lines.map((line) => {
+        let key = "",
+          value = "";
 
         if (line.includes(":")) {
           [key, value] = line.split(":", 2).map((s) => s.trim());
@@ -540,7 +558,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
         });
       } else {
         // Replace all items with the edited content
-        const newItems = lines.map(line => {
+        const newItems = lines.map((line) => {
           let key = "",
             value = "";
 
@@ -581,10 +599,10 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
   // Filter items based on search text
   const filteredItems = filterText
     ? items.filter(
-      (item) =>
-        item.key.toLowerCase().includes(filterText.toLowerCase()) ||
-        item.value.toLowerCase().includes(filterText.toLowerCase()),
-    )
+        (item) =>
+          item.key.toLowerCase().includes(filterText.toLowerCase()) ||
+          item.value.toLowerCase().includes(filterText.toLowerCase()),
+      )
     : items;
 
   return (
@@ -713,8 +731,10 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
               <Plus size={24} className="text-muted-foreground mb-2" />
               <p className="text-muted-foreground text-sm mb-1">
                 No items added yet
-              </p> <p className="text-muted-foreground text-xs mb-4">
-                Add items manually or paste from clipboard </p>
+              </p>{" "}
+              <p className="text-muted-foreground text-xs mb-4">
+                Add items manually or paste from clipboard{" "}
+              </p>
               <div className="flex space-x-2">
                 <Button variant="outline" size="sm" onClick={handleAddItem}>
                   <Plus size={14} className="mr-1.5" /> Add Item
@@ -774,20 +794,15 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
           </div>
 
           {/* Table Body with ScrollArea */}
-          
 
-          <ScrollArea 
-            className="w-full min-h-[100px]" 
-            style={{ 
-              height: filteredItems.length > 3 ? '350px' : 'auto', 
-              maxHeight: '350px' 
+          <ScrollArea
+            className="w-full min-h-[50px]"
+            style={{
+              height: filteredItems.length > 7 ? "350px" : "auto",
+              maxHeight: "350px",
             }}
           >
-            <div 
-              ref={tableBodyRef}
-              className="w-full" 
-              tabIndex={0}
-            >
+            <div ref={tableBodyRef} className="w-full" tabIndex={0}>
               {filteredItems.map((item) => (
                 <div
                   key={item.id}
@@ -803,7 +818,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
                     setDraggedItemId(null);
                     setHoveredItemId(null);
                   }}
-                > 
+                >
                   <div className="p-2 border-r border-border flex justify-center">
                     <div
                       className="cursor-pointer p-1 hover:bg-accent/50 rounded-sm flex items-center justify-center"

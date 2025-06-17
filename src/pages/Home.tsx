@@ -1,9 +1,7 @@
-// src/pages/Home.tsx
-
 import React, { useState, useRef, useEffect } from "react";
-import { RequestPanel } from "../components/RequestPanel";
-import { ResponsePanel } from "../components/ResponsePanel";
 import { useAppStore } from "../store";
+import { RequestPanel } from "../components/request/RequestPanel";
+import { ResponsePanel } from "../components/response/ResponsePanel";
 
 export const Home: React.FC = () => {
   const [splitPosition, setSplitPosition] = useState(50); // percentage
@@ -15,17 +13,17 @@ export const Home: React.FC = () => {
   // Check if we're on a mobile/small screen
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobileView(window.innerWidth < 768); // md breakpoint in Tailwind is 768px
+      setIsMobileView(window.innerWidth < 768);
     };
-    
+
     // Initial check
     checkScreenSize();
-    
+
     // Listen for resize events
-    window.addEventListener('resize', checkScreenSize);
-    
+    window.addEventListener("resize", checkScreenSize);
+
     return () => {
-      window.removeEventListener('resize', checkScreenSize);
+      window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
 
@@ -40,12 +38,12 @@ export const Home: React.FC = () => {
 
       const containerRect = containerRef.current.getBoundingClientRect();
       const newPosition =
-        (isMobileView || layoutOrientation === "vertical")
+        isMobileView || layoutOrientation === "vertical"
           ? ((e.clientY - containerRect.top) / containerRect.height) * 100
           : ((e.clientX - containerRect.left) / containerRect.width) * 100;
 
       // Limit the range to prevent panels from becoming too small
-      if (newPosition >= 20 && newPosition <= 80) {
+      if (newPosition >= 30 && newPosition <= 80) {
         setSplitPosition(newPosition);
       }
     };

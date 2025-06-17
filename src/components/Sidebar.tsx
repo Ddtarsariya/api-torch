@@ -1,4 +1,3 @@
-// src/components/Sidebar.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppStore } from "../store";
@@ -8,8 +7,40 @@ import { EnvironmentModal } from "./EnvironmentModal";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { CollectionItem } from "./CollectionItem";
 import { EnvironmentItem } from "./EnvironmentItem";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { ChevronDown, ChevronRight, MoreHorizontal, Edit, Trash, Download, Upload, Search, Plus, Folder, FileText, FolderPlus, Server, Globe, CheckCircle2, Copy, Settings, Star, StarOff, ArrowUpDown, ExternalLink, Save, BookmarkPlus, Layers, Command, Bookmark } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import {
+  ChevronDown,
+  ChevronRight,
+  MoreHorizontal,
+  Edit,
+  Trash,
+  Download,
+  Upload,
+  Search,
+  Plus,
+  Folder,
+  FileText,
+  FolderPlus,
+  Server,
+  Globe,
+  CheckCircle2,
+  Copy,
+  Settings,
+  Star,
+  StarOff,
+  ArrowUpDown,
+  ExternalLink,
+  Save,
+  BookmarkPlus,
+  Layers,
+  Command,
+  Bookmark,
+} from "lucide-react";
 
 interface SidebarProps {
   onItemClick?: () => void;
@@ -30,9 +61,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
 
   const [isImportExportModalOpen, setIsImportExportModalOpen] = useState(false);
   const [isEnvironmentModalOpen, setIsEnvironmentModalOpen] = useState(false);
-  const [selectedEnvironmentId, setSelectedEnvironmentId] = useState<string | undefined>(undefined);
+  const [selectedEnvironmentId, setSelectedEnvironmentId] = useState<
+    string | undefined
+  >(undefined);
   const [searchQuery, setSearchQuery] = useState("");
-  const [importExportType, setImportExportType] = useState<"collection" | "environment">("collection");
+  const [importExportType, setImportExportType] = useState<
+    "collection" | "environment"
+  >("collection");
   const [favorites, setFavorites] = useState<string[]>([]);
 
   const location = useLocation();
@@ -90,14 +125,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
 
   const filteredCollections = searchQuery
     ? collections.filter((c) =>
-      c.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
+        c.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
     : collections;
 
   const filteredEnvironments = searchQuery
     ? environments.filter((e) =>
-      e.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
+        e.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
     : environments;
 
   const favoriteCollections = collections.filter((c) =>
@@ -108,17 +143,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
     <div className="flex flex-col h-full bg-card/50 backdrop-blur-sm border-r border-border">
       <div className="p-3 border-b border-border">
         <div className="relative mb-2">
-          <Search size={14} className="absolute left-2.5 top-2 text-muted-foreground" />
+          <Search
+            size={14}
+            className="absolute left-2.5 top-2 text-muted-foreground"
+          />
           <input
             ref={searchInputRef}
             type="text"
-            placeholder={isEnvironmentsPage ? "Search environments..." : "Search collections..."}
+            placeholder={
+              isEnvironmentsPage
+                ? "Search environments..."
+                : "Search collections..."
+            }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-8 pr-10 py-1.5 text-xs bg-background border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <div className="absolute right-2.5 top-1.5 text-xs text-muted-foreground">
-            <kbd className="px-1 py-0.5 bg-muted border rounded text-[10px]">⌘K</kbd>
+            <kbd className="px-1 py-0.5 bg-muted border rounded text-[10px]">
+              ⌘K
+            </kbd>
           </div>
         </div>
 
@@ -142,13 +186,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
                     variant="ghost"
                     size="icon"
                     className="h-6 w-6 rounded-md hover:bg-accent"
-                    onClick={isEnvironmentsPage ? handleImportEnvironment : handleImportCollection}
+                    onClick={
+                      isEnvironmentsPage
+                        ? handleImportEnvironment
+                        : handleImportCollection
+                    }
                   >
                     <Upload size={12} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-xs">{isEnvironmentsPage ? "Import Environment" : "Import Collection"}</p>
+                  <p className="text-xs">
+                    {isEnvironmentsPage
+                      ? "Import Environment"
+                      : "Import Collection"}
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -160,13 +212,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
                     variant="ghost"
                     size="icon"
                     className="h-6 w-6 rounded-md hover:bg-accent"
-                    onClick={isEnvironmentsPage ? handleAddEnvironment : handleAddCollection}
+                    onClick={
+                      isEnvironmentsPage
+                        ? handleAddEnvironment
+                        : handleAddCollection
+                    }
                   >
                     <Plus size={12} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-xs">{isEnvironmentsPage ? "New Environment" : "New Collection"}</p>
+                  <p className="text-xs">
+                    {isEnvironmentsPage ? "New Environment" : "New Collection"}
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -204,14 +262,29 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
               <div className="text-center py-4 px-2">
                 {searchQuery ? (
                   <div className="bg-muted/50 rounded-lg p-3">
-                    <Search size={18} className="mx-auto text-muted-foreground mb-2 opacity-50" />
-                    <p className="text-xs text-muted-foreground">No collections match your search</p>
+                    <Search
+                      size={18}
+                      className="mx-auto text-muted-foreground mb-2 opacity-50"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      No collections match your search
+                    </p>
                   </div>
                 ) : (
                   <div className="bg-muted/50 rounded-lg p-3">
-                    <FolderPlus size={18} className="mx-auto text-muted-foreground mb-2 opacity-50" />
-                    <p className="text-xs text-muted-foreground mb-2">No collections yet</p>
-                    <Button variant="outline" size="sm" onClick={handleAddCollection} className="text-[10px] h-6 px-2">
+                    <FolderPlus
+                      size={18}
+                      className="mx-auto text-muted-foreground mb-2 opacity-50"
+                    />
+                    <p className="text-xs text-muted-foreground mb-2">
+                      No collections yet
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddCollection}
+                      className="text-[10px] h-6 px-2"
+                    >
                       <Plus size={10} className="mr-1" /> New Collection
                     </Button>
                   </div>
@@ -245,14 +318,29 @@ export const Sidebar: React.FC<SidebarProps> = ({ onItemClick }) => {
               <div className="text-center py-4 px-2">
                 {searchQuery ? (
                   <div className="bg-muted/50 rounded-lg p-3">
-                    <Search size={18} className="mx-auto text-muted-foreground mb-2 opacity-50" />
-                    <p className="text-xs text-muted-foreground">No environments match your search</p>
+                    <Search
+                      size={18}
+                      className="mx-auto text-muted-foreground mb-2 opacity-50"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      No environments match your search
+                    </p>
                   </div>
                 ) : (
                   <div className="bg-muted/50 rounded-lg p-3">
-                    <Server size={18} className="mx-auto text-muted-foreground mb-2 opacity-50" />
-                    <p className="text-xs text-muted-foreground mb-2">No environments yet</p>
-                    <Button variant="outline" size="sm" onClick={handleAddEnvironment} className="text-[10px] h-6 px-2">
+                    <Server
+                      size={18}
+                      className="mx-auto text-muted-foreground mb-2 opacity-50"
+                    />
+                    <p className="text-xs text-muted-foreground mb-2">
+                      No environments yet
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddEnvironment}
+                      className="text-[10px] h-6 px-2"
+                    >
                       <Plus size={10} className="mr-1" /> New Environment
                     </Button>
                   </div>

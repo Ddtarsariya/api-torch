@@ -3,15 +3,42 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAppStore } from "../store";
 import { Button } from "./ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { ChevronDown, ChevronRight, MoreHorizontal, Edit, Trash, Download, Copy, Folder, FolderPlus, Star, StarOff, Plus } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import {
+  ChevronDown,
+  ChevronRight,
+  MoreHorizontal,
+  Edit,
+  Trash,
+  Download,
+  Copy,
+  Folder,
+  FolderPlus,
+  Star,
+  StarOff,
+  Plus,
+} from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ImportExportModal } from "./ImportExportModal";
 import { RequestItem } from "./RequestItem";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 import type { ApiRequest, Collection } from "../types";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 interface CollectionItemProps {
   collection: Collection;
@@ -121,7 +148,10 @@ export const CollectionItem: React.FC<CollectionItemProps> = ({
 
   const handleDuplicate = () => {
     const duplicatedCollection = deepCloneItem(collection) as Collection;
-    createCollection(duplicatedCollection.name, duplicatedCollection.description);
+    createCollection(
+      duplicatedCollection.name,
+      duplicatedCollection.description,
+    );
   };
 
   return (
@@ -340,7 +370,8 @@ export const CollectionItem: React.FC<CollectionItemProps> = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Collection</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete the collection "{collection.name}"? This action cannot be undone.
+              Are you sure you want to delete the collection "{collection.name}
+              "? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -366,7 +397,7 @@ function deepCloneItem(collection: Collection): Collection {
     items: collection.items.map((item) =>
       "method" in item
         ? { ...item, id: uuidv4() }
-        : deepCloneItem(item as Collection)
+        : deepCloneItem(item as Collection),
     ),
   };
 }

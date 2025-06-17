@@ -1,8 +1,12 @@
-// src/components/RequestItem.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { useAppStore } from "../store";
 import { Button } from "./ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 import { MoreHorizontal, Edit, Trash, Copy } from "lucide-react";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { v4 as uuidv4 } from "uuid"; // Ensure this import is correct
@@ -19,7 +23,13 @@ export const RequestItem: React.FC<RequestItemProps> = ({
   level = 0,
   onItemClick,
 }) => {
-  const { setActiveRequest, activeRequestId, deleteRequest, updateRequest, createRequest } = useAppStore();
+  const {
+    setActiveRequest,
+    activeRequestId,
+    deleteRequest,
+    updateRequest,
+    createRequest,
+  } = useAppStore();
   const [showMenu, setShowMenu] = useState(false);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState(request.name);

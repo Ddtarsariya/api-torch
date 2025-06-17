@@ -7,7 +7,7 @@ import { useAppStore } from "../../store"; // Import the global store
 
 interface EnhancedCodeEditorProps {
   value: string;
-  onChange: (value: string | undefined) => void;
+  onChange: (value: string) => void;
   language: string;
   height?: string;
   placeholder?: string;
@@ -66,7 +66,7 @@ export const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
           { token: "number", foreground: "fda4af" }, // Numbers
         ],
         colors: {
-          "editor.background": "#0f172a",
+          "editor.background": "#0A1222",
           "editor.foreground": "#e2e8f0",
           "editor.lineHighlightBackground": "#1e293b",
           "editorCursor.foreground": "#818cf8",
@@ -180,7 +180,11 @@ export const EnhancedCodeEditor: React.FC<EnhancedCodeEditorProps> = ({
           height={editorHeight}
           language={language}
           value={value}
-          onChange={readOnly ? undefined : onChange}
+          onChange={(newValue) => {
+            if (!readOnly && newValue !== undefined) {
+              onChange(newValue);
+            }
+          }}
           theme={editorTheme}
           options={{
             minimap: { enabled: false },

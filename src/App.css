@@ -35,6 +35,20 @@
   }
 }
 
+@keyframes pulse-border {
+  0%,
+  100% {
+    border-color: rgba(99, 102, 241, 0.7);
+  }
+  50% {
+    border-color: rgba(99, 102, 241, 1);
+  }
+}
+
+.animate-pulse-border {
+  animation: pulse-border 2s infinite;
+}
+
 /* Remove these styles as they might interfere with our layout */
 /* .card {
   padding: 2em;

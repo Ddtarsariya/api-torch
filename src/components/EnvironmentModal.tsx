@@ -74,14 +74,14 @@ export const EnvironmentModal: React.FC<EnvironmentModalProps> = ({
 
   const handleSave = () => {
     if (!name.trim()) return;
-  
+
     if (environment) {
       updateEnvironment(environment.id, { name, variables });
     } else {
       // Use the enhanced createEnvironment function with variables
       createEnvironment(name, variables);
     }
-  
+
     onClose();
   };
 
