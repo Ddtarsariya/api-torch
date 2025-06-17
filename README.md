@@ -6,9 +6,26 @@
 [![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-⚡-purple.svg)](https://vitejs.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-ff69b4.svg)](https://github.com/yourusername/api-torch/blob/main/CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-ff69b4.svg)](https://github.com/Ddtarsariya/api-torch/blob/master/CONTRIBUTING.md)
 
 ---
+
+<img src="https://raw.githubusercontent.com/Ddtarsariya/api-torch/master/public/logo.png" alt="APITorch Logo" width="200"/>
+
+## 📸 Screenshots
+
+Take a look at some key views of **API-Torch**:
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/Ddtarsariya/api-torch/master/public/request.png" alt="RequestPanel" width="100%"/></td>
+    <td><img src="https://raw.githubusercontent.com/Ddtarsariya/api-torch/master/public/mode.png" alt="Dark Mode" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/Ddtarsariya/api-torch/master/public/runner.png" alt="Runner" width="100%"/></td>
+    <td><img src="https://raw.githubusercontent.com/Ddtarsariya/api-torch/master/public/environment.png" alt="Environment and Variables" width="100%"/></td>
+  </tr>
+</table>
 
 ## ✨ Features
 
@@ -57,7 +74,7 @@ _Coming soon – visual walkthroughs of the features above!_
 Clone the repository:
 
 ```bash
-git clone [https://github.com/yourusername/api-torch.git](https://github.com/yourusername/api-torch.git) # Replace yourusername with the actual GitHub username
+git clone [https://github.com/Ddtarsariya/api-torch.git](https://github.com/Ddtarsariya/api-torch.git) # Replace yourusername with the actual GitHub username
 cd api-torch
 ```
 
@@ -125,7 +142,7 @@ We ❤️ open source! Contributions of any kind are welcome:
 4.  Push to your branch: `git push origin feature/AmazingFeature`
 5.  Open a pull request
 
-Check out our [Contributing Guide](https://github.com/yourusername/api-torch/blob/main/CONTRIBUTING.md) for more details.
+Check out our [Contributing Guide](https://github.com/Ddtarsariya/api-torch/blob/master/CONTRIBUTING.md) for more details.
 
 ---
 
@@ -133,7 +150,7 @@ Check out our [Contributing Guide](https://github.com/yourusername/api-torch/blo
 
 This project is licensed under the MIT License.
 
-See the [LICENSE](https://github.com/yourusername/api-torch/blob/main/LICENSE) file for details.
+See the [LICENSE](https://github.com/Ddtarsariya/api-torch/blob/master/LICENSE) file for details.
 
 ---
 
